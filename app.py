@@ -1,11 +1,15 @@
 from flask import Flask
 from datetime import datetime
+from flask_cors import CORS
 
 from config import Config
 from utils import *
 
-app = Flask(__name__)
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
+app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def healthcheck():
@@ -32,12 +36,16 @@ def details(username):
             "status": False,
             "message": error
         }, 500
-    word_list = get_word_list(tweets_list)
+    word_counts = get_word_list(tweets_list)
+    word_list = [{'value': k, 'count': word_counts[k]} for k in word_counts]
+    text = " ".join([x['value'] for x in word_list])
+    wordcloud = WordCloud(max_font_size=40).generate(text)
+    wordcloud.to_file(f"static/{username}.png")
     return {
         "status": True,
         "message": "",
         "data": {
-            "word_list": word_list,
+            "wordcloud_url": f"/static/{username}.png",
             "username": "",
             "timestamp": now,
             "followers": 0,
