@@ -46,10 +46,7 @@ def details(username):
         "message": "",
         "data": {
             "wordcloud_url": f"/static/{username}.png",
-            "username": "",
-            "timestamp": now,
-            "followers": 0,
-            "following": 0,
-            "tweets": 0,
+            "username": username,
+            "timestamp": now
         }
     }, 200
